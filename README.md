@@ -2,7 +2,7 @@
 Đồ án 2 môn Toán Ứng dụng và Thống kê
 
 ### Công việc
-#### 1. Lý thuyết (3đ)
+#### 1. Lý thuyết (6đ)
 - [ ] Câu 1 (0.5đ)
 - [ ] Câu 2 (0.5đ)
 - [ ] Câu 3 (1.5đ)
