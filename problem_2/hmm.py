@@ -78,13 +78,13 @@ def viterbi(V: np.array, A: np.array, B:np.array, initial_prob: np.array):
     dp = np.zeros((T, M)) # [T, M]
     trace = np.zeros((T, M))
     # base dynamic array
-    dp[0, :] = initial_prob * B[:, V[0]]
+    dp[0, :] = np.log(initial_prob * B[:, V[0]])
     
     for t in range(1, T):
         for x in range(M):
-            probability = dp[t-1].dot(A[:, x])
+            probability = dp[t-1] + np.log(A[:, x]) + np.log(B[x, V[t]])
             trace[t-1, x] = np.argmax(probability)
-            dp[t, x] = np.max(probability) * B[x, V[t]]
+            dp[t, x] = np.max(probability) 
 
     optimal_path = np.zeros(T)
     # find the most probable last hidden state
@@ -102,10 +102,10 @@ def viterbi(V: np.array, A: np.array, B:np.array, initial_prob: np.array):
     optimal_path = np.flip(optimal_path, 0)
     return optimal_path
 
-def baum_welch(V, A, B, initial_prob, n_iter=100):
+def baum_welch(V: np.array, A: np.array, B: np.array, initial_prob, n_iter=100):
     M = A.shape[0]
     T = len(V)
- 
+
     for _ in range(n_iter):
         dpL = forward(V, A, B, initial_prob)
         dpR = backward(V, A, B)
@@ -113,9 +113,9 @@ def baum_welch(V, A, B, initial_prob, n_iter=100):
         xi = np.zeros((M, M, T - 1))
         for t in range(T - 1):
             denominator = np.dot(np.dot(dpL[t, :].T, A) * B[:, V[t + 1]].T, dpR[t + 1, :])
-            for i in range(M):
-                numerator = dpL[t, i] * A[i, :] * B[:, V[t + 1]].T * dpR[t + 1, :].T
-                xi[i, :, t] = numerator / denominator
+            for x in range(M):
+                numerator = dpL[t, x] * A[x, :] * B[:, V[t + 1]].T * dpR[t + 1, :].T
+                xi[x, :, t] = numerator / denominator
  
         gamma = np.sum(xi, axis=1)
         A = np.sum(xi, 2) / np.sum(gamma, axis=1).reshape((-1, 1))
@@ -127,7 +127,7 @@ def baum_welch(V, A, B, initial_prob, n_iter=100):
         denominator = np.sum(gamma, axis=1)
         for l in range(K):
             B[:, l] = np.sum(gamma[:, V == l], axis=1)
- 
+
         B = np.divide(B, denominator.reshape((-1, 1)))
  
     return (A, B)
