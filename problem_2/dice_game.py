@@ -25,7 +25,7 @@ import numpy as np
         [0.5, 0.5] ????
 '''
 
-def solve():
+def solve(transition: np.array, emission: np.array, initialize: np.array):
     pass
 
 if __name__ == '__main__':
