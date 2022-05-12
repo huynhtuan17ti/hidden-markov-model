@@ -91,6 +91,8 @@ if __name__ == '__main__':
     initial_distribution = np.array((0.5, 0.5))
     
     V = val_df['Event_Pattern'].to_numpy()
-    predict = viterbi(V, A, B, initial_distribution)
-    label = val_df['Outcome_Next_Day_Direction'].to_numpy()
-    print('Acc:', (predict == label).sum() / len(predict) * 100)
+    A, B = baum_welch(V, A, B, initial_distribution, 1)
+    print(B)
+    #predict = viterbi(V, A, B, initial_distribution)
+    #label = val_df['Outcome_Next_Day_Direction'].to_numpy()
+    #print('Acc:', (predict == label).sum() / len(predict) * 100)
