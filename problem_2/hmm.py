@@ -1,4 +1,3 @@
-from os import preadv
 import numpy as np
 
 def forward(V: np.array, A: np.array, B:np.array, initial_prob: np.array):
